@@ -17,6 +17,9 @@ def k(P, i, Mp, Mster):
     # Mster is massa v/d ster in zonsmassa's
     return k
 
+kEarth = k(365.25, np.pi/2, 1/317.8, 1)
+kJupiter = k(4332.71, np.pi/2, 1, 1)
+print ("kEarth =", kEarth, "kJupiter =", kJupiter)
 
 # Opdracht2
 def load():
