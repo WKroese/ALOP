@@ -17,6 +17,7 @@ def k(P, i, Mp, Mster):
     # Mster is massa v/d ster in zonsmassa's
     return k
 
+
 # Opdracht2
 def load():
     
@@ -25,3 +26,24 @@ def load():
     return data
     
 print load()
+
+def leastsquares(k,P,f_0,v_0):
+    
+    f= 0#
+    
+    v_R = k * np.sin(2*np.pi*(f+f_0)) +v_0   
+    
+    X_2 = 
+    
+    
+
+def plot():
+    
+    data = load()
+    
+    plt.scatter(data[0],data[1])
+    plt.xlabel('date')
+    plt.ylabel('radial velocity')
+    plt.show()
+
+plot()
