@@ -32,21 +32,49 @@ print load()
 
 def leastsquares(k,P,f_0,v_0):
     
-    f= 0#
+    data = load()
+    t=data[0]
+    v = data[1]
+    sigma = data[2]
     
-    v_R = k * np.sin(2*np.pi*(f+f_0)) +v_0   
+    f = 1/P * t
     
-    X_2 = 
+    v_model = k * np.sin(2*np.pi*(f+f_0)) +v_0   
+    X_2 = 0
+
+    for i in range(len(v)):
+        X_2 += ((v[i]-v_model[i])/sigma[i])**2
+        
+    
+    return X_2
     
     
 
+    
 def plot():
     
     data = load()
     
-    plt.scatter(data[0],data[1])
+    plt.plot(data[0],data[1])
     plt.xlabel('date')
     plt.ylabel('radial velocity')
+    
+    k=60
+    P=4
+    
+    x=[]
+
+    
+    for P in np.linspace(3,5,200):     # Hij maakt nog veel te veel berekeningen. Hoe kunnen we beter k en P bepalen..?
+        for k in np.linspace(50,70,200):
+            #for f_0 in np.linspace(0,1,100):
+            f_0=0.5
+            y_least = leastsquares(k,P,f_0,10)
+            x.append(y_least)
+            
+    print x
+
     plt.show()
+    
 
 plot()
