@@ -15,3 +15,14 @@ def load():
     return data
     
 print load()
+
+def plot():
+    
+    data = load()
+    
+    plt.scatter(data[0],data[1])
+    plt.xlabel('date')
+    plt.ylabel('radial velocity')
+    plt.show()
+
+plot()
