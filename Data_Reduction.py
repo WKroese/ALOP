@@ -6,8 +6,7 @@ import astropy.io as ast
 import matplotlib.pyplot as plt
 
 def import_data():
-    
-    filename = 
+    filename = raw_input("Enter filename")
     
     hdul = ast.open(filename+".fits") 
     im1 = hdul[1].data 
