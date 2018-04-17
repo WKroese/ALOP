@@ -45,7 +45,6 @@ image_R = fits.getdata("Enter file name Rfilter exposure")
 image_V = fits.getdata("Enter file name Vfilter exposure")
 
 #hmin is minimal threshold for detection. Should be 3-4 sigma above background RMS
-# fwhm
 [xR,yR,fluxR,sharpnessR,roundnessR] = sp.find(image_R,hmin ,5. )
 [xV,yV,fluxV,sharpnessV,roundnessV] = sp.find(image_V,hmin ,5. )
 
