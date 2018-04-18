@@ -6,7 +6,12 @@ import numpy as np
 import astropy.io as ast
 from astropy.io import fits
 import matplotlib.pyplot as plt
+import os
 #import sp
+
+# Importeer uit de map waar de data in staat, alle namen van de datafiles
+# Naderhand kunnen we een forloop maken en die voor alle bestanden dan in 1 keer laten runnen, in plaats van alles steeds handmatig te importeren
+datafiles = os.listdir()
 
 # Function to unpack the data
 # 'a' is the filter colour.
