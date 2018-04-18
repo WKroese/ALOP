@@ -1,6 +1,6 @@
 # Last update: 17-04-2018
 # ALOP La Palma project 'Transients' Data calibration
-# Daphne Abbink, Willem Kroese, Sacha van Ruiten, Yke Rusticus, Kira Strelow
+# Authors: Daphne Abbink, Willem Kroese, Sacha van Ruiten, Yke Rusticus, Kira Strelow
 
 import numpy as np
 import astropy.io as ast
