@@ -7,7 +7,7 @@ import astropy.io as ast
 from astropy.io import fits
 import matplotlib.pyplot as plt
 import os
-#import sp
+import sp
 
 # Importeer uit de map waar de data in staat, alle namen van de datafiles
 # Naderhand kunnen we een forloop maken en die voor alle bestanden dan in 1 keer laten runnen, in plaats van alles steeds handmatig te importeren
@@ -22,7 +22,7 @@ def import_data(a):
     hdr0 = hdul[0].header 
     hdul.close()
     exp_t = hdr0['EXPTIME']
-    return(im, exp_t)
+    return(im[1600:2601, 500:1501], exp_t)
 
 # Function to give the mean bias image or mean normalized flat field image (calibration image).
 # parameters: a is either 'bias' or 'flat', depending on the file type.
@@ -35,7 +35,7 @@ def make_cal_im(a,b):
     for i in range(number1,number2+1,1):
         filename = "r"+str(i)+".fit"
         hdul = fits.open(filename) 
-        im = hdul[1].data 
+        im = hdul[4].data 
         hdr0 = hdul[0].header 
 
         hdul.close()
@@ -44,9 +44,9 @@ def make_cal_im(a,b):
         cal_im_total += im
     cal_im = cal_im_total/(float(number2-number1+1))
     if b:
-        im /= np.mean(im)
-    
-    return cal_im
+        cal_im /= np.mean(im)
+
+    return cal_im[1600:2601, 500:1501]
 
 # Thir function calibrates the image with use of:  Image = (source + sky)*flat + bias
 # The bias is needed, as well as the exposure time of the image, and the normalized flat field in
@@ -56,11 +56,12 @@ def calibrate(im, im_t, bias, flat):
     im = im/(flat*im_t)
 
     #hmin is minimal threshold for detection. Should be 3-4 sigma above background RMS
-    [x,y,flux,sharpness,roundness] = sp.find(im,hmin ,5. )
+    hmin = 10000
+    [x,y,flux,sharpness,roundness] = sp.find(im, hmin ,5. )
 
     # Bij skyrad even zelf invullen: Two element vector giving the inner and outer radii to be used 
     # for the sky annulus
-    [flux, fluxerr, sky, skyerr] = sp.aper(image=im, xc=x, yc=y, phpadu=5., apr=[5], skyrad=[0,0], \
+    [flux, fluxerr, sky, skyerr] = sp.aper(image=im, xc=x, yc=y, phpadu=5., apr=[5], skyrad=[10,20], \
     badpix=[0,0], flux=True,nan=True)
     return(flux, fluxerr)
 
@@ -84,10 +85,12 @@ raw_V, t_V = import_data("V")
 bias = make_cal_im("bias",False)
 flat_R = make_cal_im("flat_R",True)
 flat_V = make_cal_im("flat_V",True)
-#science_R, err_R = calibrate(raw_R, t_R, bias, flat_R)
-#science_V, err_V = calibrate(raw_V, t_V, bias, flat_V)
-#m_R, err_m_R = magnitude(science_R, err_R, m_R_ref, err_m_R_ref)
-#m_V, err_m_V = magnitude(science_V, err_V, m_V_ref, err_m_V_ref)
+print flat_R
+print flat_V
+science_R, err_R = calibrate(raw_R, t_R, bias, flat_R)
+science_V, err_V = calibrate(raw_V, t_V, bias, flat_V)
+m_R, err_m_R = magnitude(science_R, err_R, m_R_ref, err_m_R_ref)
+m_V, err_m_V = magnitude(science_V, err_V, m_V_ref, err_m_V_ref)
 
 
 #OHJA, WE HEBBEN OOK DE JULIAN DATE NODIG NATUURLIJK
