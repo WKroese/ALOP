@@ -11,7 +11,7 @@ import os
 
 # Importeer uit de map waar de data in staat, alle namen van de datafiles
 # Naderhand kunnen we een forloop maken en die voor alle bestanden dan in 1 keer laten runnen, in plaats van alles steeds handmatig te importeren
-datafiles = os.listdir()
+#datafiles = os.listdir()
 
 # Function to unpack the data
 # 'a' is the filter colour.
@@ -31,15 +31,16 @@ def make_cal_im(a,b):
     number1 = int(raw_input("first file number "+a+"\n"))
     number2 = int(raw_input("last file number "+a+"\n"))
     cal_im_total = np.zeros([4200,2154]) # voor ons is dit straks ([1000,1000])
-    
+
     for i in range(number1,number2+1,1):
         filename = "r"+str(i)+".fit"
         hdul = fits.open(filename) 
         im = hdul[1].data 
         hdr0 = hdul[0].header 
+
         hdul.close()
         if b:
-            im /= hdr0['EXPTIME']
+            im = np.true_divide((im),hdr0['EXPTIME'])
         cal_im_total += im
     cal_im = cal_im_total/(float(number2-number1+1))
     if b:
@@ -51,8 +52,8 @@ def make_cal_im(a,b):
 # The bias is needed, as well as the exposure time of the image, and the normalized flat field in
 # the right filter that has already been devided by the exposure time of th eflat field.
 def calibrate(im, im_t, bias, flat):
-    im -= bias
-    im = image/(flat*im_t)
+    im = im - bias
+    im = im/(flat*im_t)
 
     #hmin is minimal threshold for detection. Should be 3-4 sigma above background RMS
     [x,y,flux,sharpness,roundness] = sp.find(im,hmin ,5. )
@@ -63,16 +64,16 @@ def calibrate(im, im_t, bias, flat):
     badpix=[0,0], flux=True,nan=True)
     return(flux, fluxerr)
 
-
+#1295045
 ''' !!!Hiertussen moeten we eigenlijk kijken welke sterren bruikbaar zijn en welke indices daarbij
 horen. Ook de index van de transient moeten we weten, plus de magnitdes van de hulpsterren.!!! '''
 
 # PHOTOMETRIC CALIBRATION
 
+#voor de indices nam ik nu even aan dat de transient op 0 zit, de rest is dus reference stars.
 def magnitude(flux, err_flux, m_ref, err_m_ref):
-    m_arr = -2.5 * np.log10(flux[0] / flux[1:]) + m_ref # voor de indices nam ik nu even aan dat de 
-    err_m_arr = np.sqrt((2.5/(flux[0]*np.log(10))*err_flux[0])**2 + \ # transient op 0 zit, de rest
-    ((2.5/(flux[1:]*np.log(10))*err_flux[1:])**2 + err_m_ref**2)      # is dus reference stars.
+    m_arr = -2.5 * np.log10(flux[0] / flux[1:]) + m_ref
+    err_m_arr = np.sqrt((2.5/(flux[0]*np.log(10))*err_flux[0]))**2 + ((2.5/(flux[1:]*np.log(10))*err_flux[1:])**2 + err_m_ref**2)
     m = np.sum(m_arr/(err_m_arr)**2) # take the weighted average of all reference stars
     err_m = np.sum(1./(err_m_ar)**2)
     return(m, err_m)
@@ -83,8 +84,8 @@ raw_V, t_V = import_data("V")
 bias = make_cal_im("bias",False)
 flat_R = make_cal_im("flat_R",True)
 flat_V = make_cal_im("flat_V",True)
-science_R, err_R = calibrate(raw_R, t_R, bias, flat_R)
-science_V, err_V = calibrate(raw_V, t_V, bias, flat_V)
+#science_R, err_R = calibrate(raw_R, t_R, bias, flat_R)
+#science_V, err_V = calibrate(raw_V, t_V, bias, flat_V)
 #m_R, err_m_R = magnitude(science_R, err_R, m_R_ref, err_m_R_ref)
 #m_V, err_m_V = magnitude(science_V, err_V, m_V_ref, err_m_V_ref)
 
