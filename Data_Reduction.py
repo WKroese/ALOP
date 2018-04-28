@@ -9,9 +9,10 @@ import matplotlib.pyplot as plt
 import os
 import sp
 
-# Importeer uit de map waar de data in staat, alle namen van de datafiles
-# Naderhand kunnen we een forloop maken en die voor alle bestanden dan in 1 keer laten runnen, in plaats van alles steeds handmatig te importeren
-#datafiles = os.listdir()
+XMIN = 1600
+XMAX = 2601
+YMIN = 500
+YMAX = 1501
 
 # Function to unpack the data
 # 'a' is the filter colour.
@@ -46,7 +47,7 @@ def make_cal_im(a,b):
     if b:
         cal_im /= np.mean(im)
 
-    return cal_im[1600:2601, 500:1501]
+    return cal_im[XMIN:XMAX, YMIN:YMAX]
 
 # Thir function calibrates the image with use of:  Image = (source + sky)*flat + bias
 # The bias is needed, as well as the exposure time of the image, and the normalized flat field in
